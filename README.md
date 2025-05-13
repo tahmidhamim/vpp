@@ -157,11 +157,11 @@ The Virtual Power Plant (VPP) API is a Spring Boot application for managing batt
    mvn jacoco:report
    ```
    - View the report at `target/site/jacoco/index.html`.
-   - Target coverage: >70% for `BatteryService`, `BatteryRepository`, and `BatteryController`.
+   - Target coverage: >70% for `BatteryService`, `BatteryRepository`, `BatteryController`, and `GlobalExceptionHandler`.
 
 3. **Integration Tests**:
    - Ensure Docker is running for Testcontainers.
-   - Integration tests (e.g., `BatteryControllerPerformanceTest`) use a PostgreSQL container configured via `TestContainerConfig`.
+   - Integration tests (e.g., `BatteryControllerTest`) use a PostgreSQL container configured via `TestcontainersConfiguration`.
 
 ## Architectural Decisions
 1. **Layered Architecture**: Separates concerns into Controller, Service, and Repository layers for maintainability and testability.
