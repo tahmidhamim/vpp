@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vpp</a> &gt; <a href="index.source.html" class="el_package">com.rore_int.vpp.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.rore_int.vpp.exception;
+
+import jakarta.validation.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.stream.Collectors;
+
+@ControllerAdvice
+<span class="fc" id="L17">public class GlobalExceptionHandler {</span>
+<span class="fc" id="L18">    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);</span>
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleValidationExceptions(MethodArgumentNotValidException ex) {
+<span class="nc" id="L22">        String message = ex.getBindingResult().getAllErrors().stream()</span>
+<span class="nc" id="L23">                .map(error -&gt; {</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">                    if (error instanceof FieldError fieldError) {</span>
+                        // Strip the binding path prefix (e.g., &quot;createBatteries.batteries[0].&quot;)
+<span class="nc" id="L26">                        String fieldName = fieldError.getField().replaceAll(&quot;.*\\.&quot;, &quot;&quot;);</span>
+<span class="nc" id="L27">                        return fieldName + &quot;: &quot; + error.getDefaultMessage();</span>
+                    }
+<span class="nc" id="L29">                    return error.getDefaultMessage();</span>
+                })
+<span class="nc" id="L31">                .collect(Collectors.joining(&quot;; &quot;));</span>
+<span class="nc" id="L32">        logger.error(&quot;Validation error in request: {}&quot;, message);</span>
+<span class="nc" id="L33">        ErrorResponse errorResponse = new ErrorResponse(&quot;VALIDATION_ERROR&quot;, message);</span>
+<span class="nc" id="L34">        return new ResponseEntity&lt;&gt;(errorResponse, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleConstraintViolation(ConstraintViolationException ex) {
+<span class="fc" id="L39">        String message = ex.getConstraintViolations().stream()</span>
+<span class="fc" id="L40">                .map(violation -&gt; {</span>
+<span class="fc" id="L41">                    String propertyPath = violation.getPropertyPath().toString();</span>
+<span class="fc" id="L42">                    String fieldName = propertyPath.substring(propertyPath.lastIndexOf('.') + 1);</span>
+<span class="fc" id="L43">                    return fieldName + &quot;: &quot; + violation.getMessage();</span>
+                })
+<span class="fc" id="L45">                .collect(Collectors.joining(&quot;; &quot;));</span>
+<span class="fc" id="L46">        logger.error(&quot;Constraint violation in request: {}&quot;, message);</span>
+<span class="fc" id="L47">        ErrorResponse errorResponse = new ErrorResponse(&quot;VALIDATION_ERROR&quot;, message);</span>
+<span class="fc" id="L48">        return new ResponseEntity&lt;&gt;(errorResponse, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleValidationException(ValidationException ex) {
+<span class="fc" id="L53">        logger.error(&quot;Validation error in service: {}&quot;, ex.getMessage());</span>
+<span class="fc" id="L54">        ErrorResponse errorResponse = new ErrorResponse(&quot;VALIDATION_ERROR&quot;, ex.getMessage());</span>
+<span class="fc" id="L55">        return new ResponseEntity&lt;&gt;(errorResponse, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleDatabaseException(DatabaseException ex) {
+<span class="fc" id="L60">        logger.error(&quot;Database error: {}&quot;, ex.getMessage(), ex);</span>
+<span class="fc" id="L61">        ErrorResponse errorResponse = new ErrorResponse(&quot;DATABASE_ERROR&quot;, &quot;An error occurred while accessing the database&quot;);</span>
+<span class="fc" id="L62">        return new ResponseEntity&lt;&gt;(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleMissingParameter(MissingServletRequestParameterException ex) {
+<span class="fc" id="L67">        String message = &quot;Missing required parameter: &quot; + ex.getParameterName();</span>
+<span class="fc" id="L68">        logger.error(&quot;Missing parameter in request: {}&quot;, message);</span>
+<span class="fc" id="L69">        ErrorResponse errorResponse = new ErrorResponse(&quot;MISSING_PARAMETER&quot;, message);</span>
+<span class="fc" id="L70">        return new ResponseEntity&lt;&gt;(errorResponse, HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleGenericException(Exception ex) {
+<span class="fc" id="L75">        logger.error(&quot;Unexpected error: {}&quot;, ex.getMessage(), ex);</span>
+<span class="fc" id="L76">        ErrorResponse errorResponse = new ErrorResponse(&quot;INTERNAL_SERVER_ERROR&quot;, &quot;An unexpected error occurred&quot;);</span>
+<span class="fc" id="L77">        return new ResponseEntity&lt;&gt;(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,9 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+vpp,com.rore_int.vpp.controller,BatteryController,12,66,0,0,2,13,1,5,1,5
+vpp,com.rore_int.vpp.service,BatteryService,25,230,8,26,5,51,8,15,0,6
+vpp,com.rore_int.vpp.exception,ErrorResponse,0,12,0,0,0,5,0,1,0,1
+vpp,com.rore_int.vpp.exception,DatabaseException,0,5,0,0,0,2,0,1,0,1
+vpp,com.rore_int.vpp.exception,ValidationException,0,4,0,0,0,2,0,1,0,1
+vpp,com.rore_int.vpp.exception,GlobalExceptionHandler,47,124,2,0,10,24,3,8,2,8
+vpp,com.rore_int.vpp,VppApplication,5,3,0,0,2,1,1,1,1,1
+vpp,com.rore_int.vpp.config,AsyncConfig,0,23,0,0,0,8,0,2,0,2

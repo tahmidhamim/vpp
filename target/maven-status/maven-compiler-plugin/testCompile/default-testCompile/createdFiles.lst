@@ -1,0 +1,7 @@
+com/rore_int/vpp/controller/BatteryControllerTest.class
+com/rore_int/vpp/repository/BatteryRepositoryTest.class
+com/rore_int/vpp/TestcontainersConfiguration.class
+com/rore_int/vpp/TestVppApplication.class
+com/rore_int/vpp/service/BatteryServiceTest.class
+com/rore_int/vpp/exception/GlobalExceptionHandlerTest.class
+com/rore_int/vpp/VppApplicationTests.class

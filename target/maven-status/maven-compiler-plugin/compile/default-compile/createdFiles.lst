@@ -1,0 +1,11 @@
+com/rore_int/vpp/exception/ValidationException.class
+com/rore_int/vpp/controller/BatteryController.class
+com/rore_int/vpp/exception/DatabaseException.class
+com/rore_int/vpp/repository/BatteryRepository.class
+com/rore_int/vpp/service/BatteryService.class
+com/rore_int/vpp/exception/ErrorResponse.class
+com/rore_int/vpp/exception/GlobalExceptionHandler.class
+com/rore_int/vpp/VppApplication.class
+com/rore_int/vpp/entity/Battery.class
+com/rore_int/vpp/dto/BatterySearchResponse.class
+com/rore_int/vpp/config/AsyncConfig.class

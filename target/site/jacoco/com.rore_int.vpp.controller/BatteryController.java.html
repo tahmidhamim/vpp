@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BatteryController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">vpp</a> &gt; <a href="index.source.html" class="el_package">com.rore_int.vpp.controller</a> &gt; <span class="el_source">BatteryController.java</span></div><h1>BatteryController.java</h1><pre class="source lang-java linenums">package com.rore_int.vpp.controller;
+
+import com.rore_int.vpp.dto.BatterySearchResponse;
+import com.rore_int.vpp.entity.Battery;
+import com.rore_int.vpp.service.BatteryService;
+import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+@RestController
+@RequestMapping(&quot;/api/batteries&quot;)
+@Validated
+public class BatteryController {
+<span class="fc" id="L20">    private static final Logger logger = LoggerFactory.getLogger(BatteryController.class);</span>
+    private final BatteryService batteryService;
+
+<span class="fc" id="L23">    public BatteryController(BatteryService batteryService) {</span>
+<span class="fc" id="L24">        this.batteryService = batteryService;</span>
+<span class="fc" id="L25">    }</span>
+
+    @PostMapping
+    public CompletableFuture&lt;ResponseEntity&lt;List&lt;Battery&gt;&gt;&gt; createBatteries(@RequestBody @Valid List&lt;Battery&gt; batteries) {
+<span class="fc" id="L29">        logger.info(&quot;Received request to create {} batteries&quot;, batteries.size());</span>
+<span class="fc" id="L30">        return batteryService.createBatteries(batteries)</span>
+<span class="fc" id="L31">                .thenApply(savedBatteries -&gt; {</span>
+<span class="fc" id="L32">                    logger.info(&quot;Successfully processed creation of {} batteries&quot;, savedBatteries.size());</span>
+<span class="fc" id="L33">                    return ResponseEntity.ok(savedBatteries);</span>
+                })
+<span class="fc" id="L35">                .exceptionally(throwable -&gt; {</span>
+<span class="nc" id="L36">                    logger.error(&quot;Error processing battery creation: {}&quot;, throwable.getMessage(), throwable);</span>
+<span class="nc" id="L37">                    throw new RuntimeException(&quot;Failed to create batteries&quot;, throwable);</span>
+                });
+    }
+
+    @GetMapping(&quot;/search&quot;)
+    public ResponseEntity&lt;BatterySearchResponse&gt; searchBatteriesByPostcodeRange(
+            @RequestParam String minPostcode,
+            @RequestParam String maxPostcode,
+            @RequestParam(required = false) Integer minCapacity,
+            @RequestParam(required = false) Integer maxCapacity) {
+<span class="fc" id="L47">        logger.info(&quot;Received request to search batteries in postcode range: {} to {}, minCapacity: {}, maxCapacity: {}&quot;,</span>
+                minPostcode, maxPostcode, minCapacity, maxCapacity);
+<span class="fc" id="L49">        BatterySearchResponse response = batteryService.searchBatteriesByPostcodeRange(minPostcode, maxPostcode, minCapacity, maxCapacity);</span>
+<span class="fc" id="L50">        return ResponseEntity.ok(response);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
