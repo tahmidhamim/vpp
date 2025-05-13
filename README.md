@@ -197,9 +197,10 @@ The Virtual Power Plant (VPP) API is a Spring Boot application for managing batt
     ```
   - Recreate the database:
     ```bash
-    psql -U postgres
+    psql postgres
     DROP DATABASE rore_db;
-    CREATE DATABASE rore_db;
+    CREATE DATABASE rore_db OWNER rore_user;
+    GRANT ALL PRIVILEGES ON DATABASE rore_db TO rore_user;
     \q
     ```
 
