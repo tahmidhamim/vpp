@@ -184,10 +184,6 @@ The Virtual Power Plant (VPP) API is a Spring Boot application for managing batt
     ```bash
     mvn test -X
     ```
-  - Verify `@Async` usage if tests fail after removing `AsyncConfig.java`:
-    ```bash
-    grep -r "@Async" src/main/java
-    ```
 
 - **Database Connection Issues**:
   - Ensure Docker is running for Testcontainers.
@@ -203,8 +199,8 @@ The Virtual Power Plant (VPP) API is a Spring Boot application for managing batt
   - Recreate the database:
     ```bash
     psql -U postgres
-    DROP DATABASE rest_api_demo;
-    CREATE DATABASE rest_api_demo;
+    DROP DATABASE rore_db;
+    CREATE DATABASE rore_db;
     \q
     ```
 
