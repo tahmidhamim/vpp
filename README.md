@@ -9,7 +9,6 @@ The Virtual Power Plant (VPP) API is a Spring Boot application for managing batt
 - [Running the Application](#running-the-application)
 - [Testing](#testing)
 - [Architectural Decisions](#architectural-decisions)
-- [Project Structure](#project-structure)
 - [Troubleshooting](#troubleshooting)
 - [Future Improvements](#future-improvements)
 - [Contributing](#contributing)
